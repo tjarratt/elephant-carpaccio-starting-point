@@ -15,6 +15,9 @@ defmodule ElephantCarpaccioWeb.CalculationLive do
       <p :if={@emissions} class="my-2">
         🌱 Your shipment will emit <%= @emissions %>g of carbon dioxide.
       </p>
+      <p :if={@fuel_type}>
+        💸 Using <%= @fuel_type %> will cost you an additional $<%= @surcharge %>
+      </p>
 
       <div class="my-4">
         <.button type="submit">
@@ -27,16 +30,31 @@ defmodule ElephantCarpaccioWeb.CalculationLive do
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
-    {:ok, socket |> assign(form: to_form(%{}), emissions: nil)}
+    {:ok, socket |> assign(form: to_form(%{}), emissions: nil, surcharge: nil, fuel_type: nil)}
   end
 
   @impl Phoenix.LiveView
   def handle_event(
         "calculate-emissions",
-        %{"destination_port" => to, "origin_port" => from} = _params,
+        %{"destination_port" => to, "origin_port" => from, "fuel_type" => fuel_type} = _params,
         socket
       ) do
-    {:noreply, socket |> assign(:emissions, fuel_consumption(from, to))}
+    {:noreply,
+     socket
+     |> assign(
+       emissions: fuel_consumption(from, to),
+       surcharge: surcharge_for(fuel_type),
+       fuel_type: "fossil"
+     )}
+  end
+
+  @surcharges %{
+    "fossil" => 0,
+    "methanol" => 31
+  }
+
+  defp surcharge_for(fuel_type) do
+    Map.fetch!(@surcharges, fuel_type)
   end
 
   @fuel_consumption %{
