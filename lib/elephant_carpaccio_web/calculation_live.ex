@@ -1,16 +1,44 @@
 defmodule ElephantCarpaccioWeb.CalculationLive do
   use ElephantCarpaccioWeb, :live_view
 
+  @ports ~w[
+    Marseilles
+    Mumbai
+    Copenhagen
+    Rotterdam
+    Manhattan
+  ]
+
+  @fuel_types ~w[fossil methanol ECO1 ECO2 ECO3]
+
   @impl Phoenix.LiveView
   def render(assigns) do
     ~H"""
     <.header>Emissions Simulator</.header>
 
     <.form for={@form} phx-submit="calculate-emissions">
-      <.input field={@form[:num_containers]} label="How many containers ?" value="1" />
-      <.input field={@form[:origin_port]} label="Origin port" value="Marseilles" />
-      <.input field={@form[:destination_port]} label="Destination port" value="Mumbai" />
-      <.input field={@form[:fuel_type]} label="Fuel type" value="fossil" />
+      <.input type="number" field={@form[:num_containers]} label="How many containers ?" value="1" />
+      <.input
+        type="select"
+        options={@ports}
+        field={@form[:origin_port]}
+        label="Origin port"
+        value="Marseilles"
+      />
+      <.input
+        type="select"
+        options={@ports}
+        field={@form[:destination_port]}
+        label="Destination port"
+        value="Mumbai"
+      />
+      <.input
+        type="select"
+        options={@fuel_types}
+        field={@form[:fuel_type]}
+        label="Fuel type"
+        value="fossil"
+      />
 
       <div :if={@result} class="my-2">
         <p>
@@ -32,7 +60,15 @@ defmodule ElephantCarpaccioWeb.CalculationLive do
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
-    {:ok, socket |> assign(form: to_form(%{}), result: nil, fuel_type: nil)}
+    {:ok,
+     socket
+     |> assign(
+       form: to_form(%{}),
+       ports: @ports,
+       fuel_types: @fuel_types,
+       result: nil,
+       fuel_type: nil
+     )}
   end
 
   @impl Phoenix.LiveView
