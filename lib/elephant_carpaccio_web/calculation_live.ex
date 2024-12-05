@@ -49,6 +49,10 @@ defmodule ElephantCarpaccioWeb.CalculationLive do
         </p>
       </div>
 
+      <div :if={@error} class="my-2">
+        <p class="text-red-400"><%= @error %></p>
+      </div>
+
       <div class="my-4">
         <.button type="submit">Calculate</.button>
       </div>
@@ -64,8 +68,9 @@ defmodule ElephantCarpaccioWeb.CalculationLive do
        form: to_form(%{}),
        ports: @ports,
        fuel_types: @fuel_types,
+       fuel_type: nil,
        result: nil,
-       fuel_type: nil
+       error: nil
      )}
   end
 
@@ -84,17 +89,26 @@ defmodule ElephantCarpaccioWeb.CalculationLive do
 
     {:noreply,
      socket
-     |> assign(
-       result: %{
-         fuel_type: fuel_type,
-         emissions: fuel_consumption(from, to) * how_many,
-         surcharge:
-           surcharge_for(fuel_type)
-           |> Decimal.mult(Decimal.new(num_containers))
-           |> apply_discount()
-           |> Decimal.round(2)
-       }
-     )}
+     |> assign(result_or_error(how_many, fuel_type, from, to))}
+  end
+
+  defp result_or_error(how_many, _fuel_type, _from, _to) when how_many <= 0 do
+    [error: "You must enter a positive number of containers", result: nil]
+  end
+
+  defp result_or_error(how_many, fuel_type, from, to) when how_many > 0 do
+    [
+      result: %{
+        fuel_type: fuel_type,
+        emissions: fuel_consumption(from, to) * how_many,
+        surcharge:
+          surcharge_for(fuel_type)
+          |> Decimal.mult(Decimal.new("#{how_many}"))
+          |> apply_discount()
+          |> Decimal.round(2)
+      },
+      error: nil
+    ]
   end
 
   defp apply_discount(total) do
