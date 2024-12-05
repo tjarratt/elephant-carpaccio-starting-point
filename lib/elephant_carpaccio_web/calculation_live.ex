@@ -14,7 +14,7 @@ defmodule ElephantCarpaccioWeb.CalculationLive do
   @impl Phoenix.LiveView
   def render(assigns) do
     ~H"""
-    <.header>Emissions Simulator</.header>
+    <.header>Super Duper Emissions Simulator</.header>
 
     <.form for={@form} phx-submit="calculate-emissions">
       <.input type="number" field={@form[:num_containers]} label="How many containers ?" value="1" />
@@ -50,9 +50,7 @@ defmodule ElephantCarpaccioWeb.CalculationLive do
       </div>
 
       <div class="my-4">
-        <.button type="submit">
-          Calculate
-        </.button>
+        <.button type="submit">Calculate</.button>
       </div>
     </.form>
     """
