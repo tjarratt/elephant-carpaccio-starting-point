@@ -90,9 +90,16 @@ defmodule ElephantCarpaccioWeb.CalculationLive do
        result: %{
          fuel_type: fuel_type,
          emissions: fuel_consumption(from, to) * how_many,
-         surcharge: surcharge_for(fuel_type) * how_many
+         surcharge: (surcharge_for(fuel_type) * how_many) |> apply_discount()
        }
      )}
+  end
+
+  defp apply_discount(total) do
+    cond do
+      total >= 100 -> total * 0.97
+      true -> total
+    end
   end
 
   @surcharges %{
