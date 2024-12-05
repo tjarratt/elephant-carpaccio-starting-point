@@ -73,6 +73,7 @@ defmodule ElephantCarpaccio.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
+      "phx.server": ["ecto.create --quiet", "ecto.migrate --quiet", "phx.server"],
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
       "assets.build": ["tailwind elephant_carpaccio", "esbuild elephant_carpaccio"],
       "assets.deploy": [
