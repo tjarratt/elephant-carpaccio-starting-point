@@ -31,7 +31,20 @@ defmodule ElephantCarpaccioWeb.CalculationLive do
   end
 
   @impl Phoenix.LiveView
-  def handle_event("calculate-emissions", _params, socket) do
-    {:noreply, socket |> assign(:emissions, 1200)}
+  def handle_event(
+        "calculate-emissions",
+        %{"destination_port" => to, "origin_port" => from} = _params,
+        socket
+      ) do
+    {:noreply, socket |> assign(:emissions, fuel_consumption(from, to))}
+  end
+
+  @fuel_consumption %{
+    "Marseilles_Mumbai" => 1200,
+    "Mumbai_Manhattan" => 2701
+  }
+
+  defp fuel_consumption(from, to) do
+    Map.get(@fuel_consumption, "#{from}_#{to}")
   end
 end
