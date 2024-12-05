@@ -97,18 +97,29 @@ defmodule ElephantCarpaccioWeb.CalculationLive do
   end
 
   defp result_or_error(how_many, fuel_type, from, to) when how_many > 0 do
-    [
-      result: %{
-        fuel_type: fuel_type,
-        emissions: fuel_consumption(from, to) * how_many,
-        surcharge:
-          surcharge_for(fuel_type)
-          |> Decimal.mult(Decimal.new("#{how_many}"))
-          |> apply_discount()
-          |> Decimal.round(2)
-      },
-      error: nil
-    ]
+    consumption = fuel_consumption(from, to)
+
+    cond do
+      from == to ->
+        [error: "I'm sorry, what ?", result: nil]
+
+      is_nil(consumption) ->
+        [error: "Sorry, we are not currently shipping from #{from} to #{to}.", result: nil]
+
+      true ->
+        [
+          result: %{
+            fuel_type: fuel_type,
+            emissions: consumption * how_many,
+            surcharge:
+              surcharge_for(fuel_type)
+              |> Decimal.mult(Decimal.new("#{how_many}"))
+              |> apply_discount()
+              |> Decimal.round(2)
+          },
+          error: nil
+        ]
+    end
   end
 
   defp apply_discount(total) do
