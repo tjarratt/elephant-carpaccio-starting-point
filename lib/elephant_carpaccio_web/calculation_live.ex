@@ -38,16 +38,23 @@ defmodule ElephantCarpaccioWeb.CalculationLive do
   @impl Phoenix.LiveView
   def handle_event(
         "calculate-emissions",
-        %{"destination_port" => to, "origin_port" => from, "fuel_type" => fuel_type} = _params,
+        %{
+          "num_containers" => num_containers,
+          "destination_port" => to,
+          "origin_port" => from,
+          "fuel_type" => fuel_type
+        } = _params,
         socket
       ) do
+    how_many = String.to_integer(num_containers)
+
     {:noreply,
      socket
      |> assign(
        result: %{
          fuel_type: fuel_type,
-         emissions: fuel_consumption(from, to),
-         surcharge: surcharge_for(fuel_type)
+         emissions: fuel_consumption(from, to) * how_many,
+         surcharge: surcharge_for(fuel_type) * how_many
        }
      )}
   end
