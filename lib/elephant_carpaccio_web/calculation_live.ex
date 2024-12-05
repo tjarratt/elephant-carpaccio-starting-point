@@ -61,7 +61,10 @@ defmodule ElephantCarpaccioWeb.CalculationLive do
 
   @surcharges %{
     "fossil" => 0,
-    "methanol" => 31
+    "methanol" => 31,
+    "ECO1" => 10,
+    "ECO2" => 47,
+    "ECO3" => 101
   }
 
   defp surcharge_for(fuel_type) do
