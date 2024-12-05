@@ -41,7 +41,19 @@ defmodule ElephantCarpaccioWeb.CalculationLive do
 
   @fuel_consumption %{
     "Marseilles_Mumbai" => 1200,
-    "Mumbai_Manhattan" => 2701
+    "Mumbai_Manhattan" => 2701,
+    "Manhattan_Copenhagen" => 1937,
+    "Rotterdam_Copenhagen" => 578,
+    "Marseilles_Copenhagen" => 429,
+    "Copenhagen_Marseilles" => 777,
+    "Mumbai_Copenhagen" => 2302,
+    "Rotterdam_Mumbai" => 1568,
+    "Copenhagen_Manhattan" => 1837,
+    "Marseilles_Rotterdam" => 576,
+    "Copenhagen_Mumbaai" => 2538,
+    "Mumbai_Marseilles" => 1148,
+    "Rotterdam_Manhattan" => 755,
+    "Copenhagen_Mumbai" => 3159
   }
 
   defp fuel_consumption(from, to) do
