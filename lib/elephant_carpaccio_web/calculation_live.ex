@@ -95,6 +95,10 @@ defmodule ElephantCarpaccioWeb.CalculationLive do
 
   defp apply_discount(total) do
     cond do
+      total >= 5000 -> total * 0.85
+      total >= 1000 -> total * 0.9
+      total >= 500 -> total * 0.95
+      total >= 700 -> total * 0.93
       total >= 100 -> total * 0.97
       true -> total
     end
