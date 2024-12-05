@@ -12,12 +12,14 @@ defmodule ElephantCarpaccioWeb.CalculationLive do
       <.input field={@form[:destination_port]} label="Destination port" value="Mumbai" />
       <.input field={@form[:fuel_type]} label="Fuel type" value="fossil" />
 
-      <p :if={@emissions} class="my-2">
-        🌱 Your shipment will emit <%= @emissions %>g of carbon dioxide.
-      </p>
-      <p :if={@fuel_type}>
-        💸 Using <%= @fuel_type %> will cost you an additional $<%= @surcharge %>
-      </p>
+      <div :if={@result} class="my-2">
+        <p>
+          🌱 Your shipment will emit <%= @result.emissions %>g of carbon dioxide.
+        </p>
+        <p>
+          💸 Using <%= @result.fuel_type %> will cost you an additional $<%= @result.surcharge %>
+        </p>
+      </div>
 
       <div class="my-4">
         <.button type="submit">
@@ -30,7 +32,7 @@ defmodule ElephantCarpaccioWeb.CalculationLive do
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
-    {:ok, socket |> assign(form: to_form(%{}), emissions: nil, surcharge: nil, fuel_type: nil)}
+    {:ok, socket |> assign(form: to_form(%{}), result: nil, fuel_type: nil)}
   end
 
   @impl Phoenix.LiveView
@@ -42,9 +44,11 @@ defmodule ElephantCarpaccioWeb.CalculationLive do
     {:noreply,
      socket
      |> assign(
-       emissions: fuel_consumption(from, to),
-       surcharge: surcharge_for(fuel_type),
-       fuel_type: "fossil"
+       result: %{
+         fuel_type: fuel_type,
+         emissions: fuel_consumption(from, to),
+         surcharge: surcharge_for(fuel_type)
+       }
      )}
   end
 
